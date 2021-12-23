@@ -1,0 +1,15 @@
+$schema: "http://json-schema.org/draft/2019-09/schema#"
+title: NewForSaleTextBookEvent
+description: Represents the event when a text book has been put up for sale
+# Java Class to create from this schema
+javaType: com.learnathon.entities.NewForSaleTextBookEvent
+type: object
+additionalProperties: false
+required:
+  - bookName
+  - price
+properties:
+  bookName:
+    type: string
+  price:
+    type: number
