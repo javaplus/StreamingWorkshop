@@ -90,14 +90,14 @@ For convenience sake, you can create this class in the same package as the gener
 
 ![Starting_Package](/images/FirstRestControllerPackageNClass.png)
 
-After creating the class, you need to add the [@RestController](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RestController.html) annotation.  Then you will need to create a method that will receive requests that indicate a book is for sale. (The full code can be seen if you expand it just below this paragraph.)  In the real world, this would most likely be a POST request since it would be creating a for sale text book instance in our system.  However, to make our coding and testing simpler, we are just going to make this map to a simple GET request.  This allows us to simply use a browser to invoke our REST endpoint.  To map a GET request to our method we will need to annotate it with the [GetMapping](https://www.javaguides.net/2018/11/spring-getmapping-postmapping-putmapping-deletemapping-patchmapping.html) annotation.  So, just create a method called "createForSaleTextBook()" that returns a String and annotate the method with the @GetMapping.  We will set the path of the @GetMapping annotation to **"/for-sale-textbooks"**.  This method could just return a hard coded string to get started with.
+After creating the class, you need to add the [@RestController](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/RestController.html) annotation right above the class declaration.  Then you will need to create a method that will receive requests that indicate a book is for sale. (The full code can be seen if you expand it just below this paragraph.)  In the real world, this would most likely be a POST request since it would be creating a for sale text book instance in our system.  However, to make our coding and testing simpler, we are just going to make this map to a simple GET request.  This allows us to simply use a browser to invoke our REST endpoint.  To map a GET request to our method we will need to annotate it with the [GetMapping](https://www.javaguides.net/2018/11/spring-getmapping-postmapping-putmapping-deletemapping-patchmapping.html) annotation.  So, just create a method called "createForSaleTextBook()" that returns a String and annotate the method with the @GetMapping.  We will set the path of the @GetMapping annotation to **"/for-sale-textbooks"**.  This method could just return a hard coded string to get started with.
 
 <details>
  <summary>Click Here for the full source code of the Simple RestController(Spoiler Alert):</summary>
 
 
 ```
-package com.example.springbootkafkademo;
+package com.learnathon.springbootkafkademo;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -151,7 +151,11 @@ You should see the hard coded string you returned displayed in the browser...
 
 The next bit of functionality we want to add is the ability to pass information about the for sale text book to our RestController.  Since our RestController only accepts a GET request the only way to pass data is via Request Parameters like this **http://localhost:8080/for-sale-textbooks?bookname=Dune**.  We are only going to pass the name of the book for sale.
 
-We need to modify our RestController to take a book name as a parameter. So, we need to add an input Parameter of type String to our createForSaleTextBook method.  But how do we indicate to Spring that this parameter should come from a Request parameter called "bookname"?  It's easy... It's through the **@RequestParam** annotation.  We've already annotated our class and our method, but you can even annotate a method parameter.  So, by using the [@RequestParam annotation](https://www.baeldung.com/spring-request-param) we can tell spring to pull the book name from the incoming http request and map it to our method's input parameter.  Then we will update the method to return the book name in it's response so we can see it when we test.  So, we simply need to prefix the new input parameter with **@RequestParam("bookname")**. Remember, you will have to add the import for **org.springframework.web.bind.annotation.RequestParam** in order to use the @RequestParam annotation.
+We need to modify our RestController to take a book name as a parameter. So, we need to add an input Parameter of type String to our createForSaleTextBook method. Let's call this input parameter **bookName**. Go ahead and add that now. Also,  concatenate the new bookName input parameter to the string you return. Let's modify the return string to be like this:   
+```
+return "The book for sale=" + bookName;
+```
+But how do we indicate to Spring that this parameter should come from a Request parameter called "bookname"?  It's easy... It's through the **@RequestParam** annotation.  We've already annotated our class and our method, but you can even annotate a method parameter.  So, by using the [@RequestParam annotation](https://www.baeldung.com/spring-request-param) we can tell spring to pull the book name from the incoming http request and map it to our method's input parameter.  Then we will update the method to return the book name in it's response so we can see it when we test.  So, we simply need to prefix the new input parameter with **@RequestParam("bookname")**. Remember, you will have to add the import for **org.springframework.web.bind.annotation.RequestParam** in order to use the @RequestParam annotation.
 
 
 <details>
@@ -179,20 +183,22 @@ You should see something like this:
 
 ![BrowserDataPass1.PNG](/images/BrowserDataPass1.PNG)
 
-You can change the value of **bookname** in the url to test passing different values to your RestController.  You should see the bookname value reflected in the text in the browser that's returned.
+You can change the value of **bookname** in the url to test passing different values to your RestController.  You should see the bookname value reflected in the text in the browser that's returned.  If you see a "Whitelabel Error Page" in the browser, then look at the logs in the terminal or command prompt where you ran the app to find a more detailed message about what's wrong.  Double check the request parameter name **bookname** matches what you have in the **@RequestParam("bookName")**. NOTE: Case does matter.  **bookname** does not equal **bookName**.
 
 ## Time to Talk to Kafka
 
 Now when we get our HTTP request in our RestController, we want to be able to broadcast a message to Kafka that a new for sale text book was added.  To do this we are going to create a message producer class that utilizes the [KafkaTemplate](https://docs.spring.io/spring-kafka/reference/html/#sending-messages) from the [Spring-Kafka Library](https://spring.io/projects/spring-kafka) to write messages to a Kafka topic.
 
-You need to create a new class for this and I would put into a folder/package called "services" and call it "ForSaleTextBookProducer".
+You need to create a new class for this and I would put into a folder/package called "services" and call it "ForSaleTextBookProducer".  So, create a new folder/package called **services** in the "com\learnathon\springbootkafkademo" package and then create the class **ForSaleTextBoodProducer** in this services package.
 
 ![Producer Class](/images/ProducerClass.PNG)
+
+For this part, I'm going to give you the full code to talk to Kafka and then explain it.
 
 Here is the full code for the new class:
 
 ```
-package com.example.springbootkafkademo.services;
+package com.learnathon.springbootkafkademo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -265,14 +271,14 @@ For SpringBoot, you can simply put this configuration in the **application.prope
 **application.properties**
 ```
 # Security configuration
-spring.kafka.properties.security.protocol=SSL
-spring.kafka.properties.ssl.truststore.location=c:/kafka/learnathon.jks
-spring.kafka.properties.ssl.truststore.password=learnathon
-spring.kafka.properties.ssl.keystore.location=c:/kafka/learnathon.jks
-spring.kafka.properties.ssl.keystore.password=learnathon
+spring.kafka.producer.bootstrap-servers=pkc-ymrq7.us-east-2.aws.confluent.cloud:9092
+spring.kafka.properties.security.protocol=SASL_SSL
+spring.kafka.properties.sasl.mechanism=PLAIN
+spring.kafka.properties.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="<api_key>" password="<api_secret>";
+
 
 # This one line is usually all you need to point to the right broker
-spring.kafka.producer.bootstrap-servers=ip-10-165-135-214.ec2.internal:9092
+
 
 ```
 **NOTE:** Remember that if you saved your learnathon.jks to a different location than "c:/kafka/learnathon.jks", then you need to update those lines in the application.properties.
@@ -281,7 +287,7 @@ spring.kafka.producer.bootstrap-servers=ip-10-165-135-214.ec2.internal:9092
 
 Before we can produce a message, we need to create a Topic in our Kafka cluster to write our messages to.
 To create a topic we will use the the Confluent Control Center that monitors/manages our Kafka cluster. (Typically you'd submit a request )
-Go here [https://ip-10-165-134-224.ec2.internal:9021](https://ip-10-165-134-224.ec2.internal:9021) and click on the "CO Cluster 1" in the top left and then click on "Topics" and click the "Add a topic" button(See image below). Remember your topic name should be "learn_" followed by your short id.  This is set in your ForSaleTextBookProducer class. After typing in your topic name, click the "Create with defaults" button. Now you should have your very own topic to test with.
+... Now you should have your very own topic to test with.
 
 ![Add Topic](/images/AddTopic.PNG)
 
@@ -294,20 +300,11 @@ Now you should have all you need configured and coded to send a message to Kafka
 
 Look at your logs and you should hopefully see some logs, but no errors. You may see a warning message about **LEADER_NOT_AVAILABLE** the first time you run it and that's ok.
 
-So, to see if you are actually sending messages, you will need to open up the Confluent Control Center that monitors our Kafka cluster.
-
-Go back to the Confluent Control Center [https://ip-10-165-134-224.ec2.internal:9021](https://ip-10-165-134-224.ec2.internal:9021) and back to the "Topics" and filter by your topic name.
 
 ![Topics](/images/Topics.PNG)
 
 
-**NOTE**: If you get an error, please verify your topic name first and then check all your application.properties settings and the location and name of your learnathon.jks.
-
-When you find your topic in the Confluent Control Center, click on it, and then click "Messages".  Don't freak out when it says it's empty.  It will only show messages that come in after you go to the "Messages" tab.
-
-Now hit your application again (refresh your browser) and have it submit another message.  Then you should see your message in the Control Center.
-
-![Message in Topic](/images/TopicMessage.PNG)
+**NOTE**: If you get an error, please verify your topic name first and then check all your application.properties settings
 
 **Now it's time to celebrate!!**  You got your first messages that talks to Kafka... But there's more awesomeness to come.... Let's get to it!
 
