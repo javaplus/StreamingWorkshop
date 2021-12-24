@@ -270,29 +270,20 @@ For SpringBoot, you can simply put this configuration in the **application.prope
 
 **application.properties**
 ```
-# Security configuration
+# This one line is usually all you need to point to the right broker
 spring.kafka.producer.bootstrap-servers=pkc-ymrq7.us-east-2.aws.confluent.cloud:9092
+
+# Security configuration
 spring.kafka.properties.security.protocol=SASL_SSL
 spring.kafka.properties.sasl.mechanism=PLAIN
 spring.kafka.properties.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="<api_key>" password="<api_secret>";
 
-
-# This one line is usually all you need to point to the right broker
-
-
 ```
-**NOTE:** Remember that if you saved your learnathon.jks to a different location than "c:/kafka/learnathon.jks", then you need to update those lines in the application.properties.
 
-### Create your Kafka Topic
+### Your Kafka Topic
 
 Before we can produce a message, we need to create a Topic in our Kafka cluster to write our messages to.
-To create a topic we will use the the Confluent Control Center that monitors/manages our Kafka cluster. (Typically you'd submit a request )
-... Now you should have your very own topic to test with.
-
-![Add Topic](/images/AddTopic.PNG)
-
-
-
+I've created topics for you and you should have been assigned a topic name.
 
 #### Retest for Real
 
@@ -301,10 +292,7 @@ Now you should have all you need configured and coded to send a message to Kafka
 Look at your logs and you should hopefully see some logs, but no errors. You may see a warning message about **LEADER_NOT_AVAILABLE** the first time you run it and that's ok.
 
 
-![Topics](/images/Topics.PNG)
-
-
-**NOTE**: If you get an error, please verify your topic name first and then check all your application.properties settings
+**NOTE**: If you get an error, please verify your topic name in the code first and then check all your application.properties settings
 
 **Now it's time to celebrate!!**  You got your first messages that talks to Kafka... But there's more awesomeness to come.... Let's get to it!
 
@@ -316,7 +304,7 @@ Now it's time to work on a message consumer.  Most likely, in the real world, we
 
 **NOTE on "Consumers":** We use the word "Consumer" a lot in the messaging world, but something to be aware of from a Kafka perspective is that a Kafka client doesn't "consume" the message in a traditional messaging sense.  That is with Kafka, when a client reads the message from the topic, the message does not get removed from the topic.  Instead, the consumer's pointer or "offset" to which message in the topic they are currently reading gets incremented.  So, at any point a consumer could go back and re-read("replay") all the messages from a topic if they chose.  Here's a good article that quickly explains it: [Messages and Kafka in Plain English](https://www.iteachrecruiters.com/blog/message-queues-and-kafka-explained-in-plain-english/)
 
-So, let's create our Kafka Consumer.  To do this we will create a new class in a "consumers" folder/package that will become our message consumer. Let's call this class the ForSaleTextBookConsumer.
+So, let's create our Kafka Consumer.  To do this we will create a new class in a "consumers" folder/package that will become our message consumer. Let's call this class the **ForSaleTextBookConsumer**.
 
 ![ConsumerClass](/images/ForSaleConsumer.PNG)
 
@@ -354,7 +342,7 @@ Before we can test, we will need to add one line to our **application.properties
 
 Here's the one new line you need to add (Note it is very similar to a line you already have but this is for the **consumer** vs the previously config line you already have is for the **producer**.):
 ```
-spring.kafka.consumer.bootstrap-servers=ip-10-165-135-214.ec2.internal:9092
+spring.kafka.consumer.bootstrap-servers=pkc-ymrq7.us-east-2.aws.confluent.cloud:9092
 ```
 ### Retest Sending and Consuming a Kafka Message.
 
@@ -376,7 +364,7 @@ If you have made it this far and it's working, then jump up and down, you've suc
 Hopefully, you are seeing how easy, from a development standpoint, it is to build microservices that interact with Kafka.
 One major hurdle to being able to subscribe to topics and consume messages is understanding what the message format will look like and what data will it contain.  **For all the same reasons it was important to have schemas for SOAP web services and REST API's, it's crucial to have schemas for messages streamed through Kafka.**
 
-We've chosen [Async API](https://www.asyncapi.com/) as our mechanism for documenting our events.  We believe the AsyncAPI is poorly named and we'd prefer to refer to it as the **Event Streaming Specification (ESS)**. So, we will be referring to the AsyncAPI for the rest of this tutorial as the ESS or Event Streaming Spec. This specification allows us to specify our Events and their Schema structure in a simple yaml file very similar to an OAS.  So just an OAS helps allows an API provider publish the details about the resources they are exposing and how to interact with them, the ESS allows producers to publish details about the events they are producing and their format.  We won't get into creating an entire ESS for this tutorial, but know that in the real world, **creating the ESS would be your starting point before serious development commences.**  We will however using one of the building blocks of ESS which is [JSON Schema](https://json-schema.org/). This will allow us to have a standard way of describing the format of our event message.
+We've chosen [Async API](https://www.asyncapi.com/) as our mechanism for documenting our events.  We believe the AsyncAPI is poorly named and we'd prefer to refer to it as the **Event Streaming Specification (ESS)**. So, we will be referring to the AsyncAPI for the rest of this tutorial as the ESS or Event Streaming Spec. This specification allows us to specify our Events and their Schema structure in a simple yaml file very similar to an OAS.  So just an OAS helps allows an API provider publish the details about the resources they are exposing and how to interact with them, the ESS allows producers to publish details about the events they are producing and their format.  We won't get into creating an entire ESS for this tutorial, but know that in the real world, **creating the ESS would be your starting point before serious development commences.**  We will however be using one of the building blocks of ESS which is [JSON Schema](https://json-schema.org/). This will allow us to have a standard way of describing the format of our event message.
 
 We've simply been publishing a simple String message to Kafka up to this point.  But now we are going to publish a more proper event message based on this [JSON Schema](https://json-schema.org/):
 
@@ -385,7 +373,7 @@ $schema: "http://json-schema.org/draft/2019-09/schema#"
 title: NewForSaleTextBookEvent
 description: Represents the event when a text book has been put up for sale
 # Java Class to create from this schema
-javaType: com.learnathon.entities.NewForSaleTextBookEvent
+javaType: com.learnathon.springbootkafkademo.entities.NewForSaleTextBookEvent
 type: object
 additionalProperties: false
 required:
