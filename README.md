@@ -47,8 +47,11 @@ You will be coding the yellow and blue boxes (the microservices).  To simplify t
     ```
 
 1. Access to Kafka.
-   - .
-   - .
+   - Info will be provided in class.
+   
+   
+
+**This is the end of the Prerequisites, below this starts the actual labs.  So, you can wait till the instructor starts the session to continue on.** 
 
 
 # Getting started
