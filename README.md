@@ -546,6 +546,6 @@ If you got this, rejoice! :joy: You've successfully produced and consumed messag
 
 I'd encourage you to look back through the few classes you created and appreciate the concise nature of the code and the separation of the code and the configuration.  With only a few lines of code, some annotations, your application.properties handling the configuration, and your SpringBoot Mojo, you have a functioning Rest Endpoint that can produce and consume messages via Kafka... Ain't that cool!
 
-Hope you've enjoyed this tutorial... All the source code is in this Git Repo as well and there are even branches that have completed code at different points.  The ESS branch contains the final completed project.
+Hope you've enjoyed this tutorial!
 
 GLHF!
