@@ -328,7 +328,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ForSaleTextBookConsumer {
 
-    @KafkaListener(topics = "learn_<your unique id here>", groupId = "<your unique id>" )
+    @KafkaListener(topics = "learn_<your unique id here>", groupId = "learn_<your unique id>" )
     public void receiveForSaleTextBookEvent(ConsumerRecord<String, String> msg) throws IOException{
         // normally I'd do something useful with my message, but I'm lazy...
         System.out.println("Got my message! :" + msg.value());
@@ -497,7 +497,7 @@ Here's the code:
 @Service
 public class ForSaleTextBookConsumer {
 
-    @KafkaListener(topics = "learn_<YOUR_ID_HERE>", groupId = "<YOUR_ID_HERE>" )
+    @KafkaListener(topics = "learn_<YOUR_ID_HERE>", groupId = "learn_<YOUR_ID_HERE>" )
     public void receiveForSaleTextBookEvent(ConsumerRecord<String, NewForSaleTextBookEvent> msg) throws IOException{
         // normally I'd do something useful with my message, but I'm lazy...
         NewForSaleTextBookEvent eventMessage = msg.value();
