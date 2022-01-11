@@ -267,7 +267,10 @@ This is because with no configuration specified it will try to connect to a loca
 
 ### Configuring SpringBoot to talk to Kafka
 
-In a less secure Kafka deployment, you would only have to specify the location of the Kafka brokers you wanted to use.  However, because of our secure Kafka environment, we also have to specify the location of a custom keystore with our private access keys.
+In a less secure Kafka deployment, you would only have to specify the location of the Kafka brokers you wanted to use.  However, because of our secure Kafka environment, we also have to specify an API key and secret to talk to Kafka.  The Api key and secret can be found here: [https://github.com/javaplus/StreamingWorkshop/blob/76a836690b54db2666f3cb953550a4ec09036f8c/temp/api.txt](https://github.com/javaplus/StreamingWorkshop/blob/76a836690b54db2666f3cb953550a4ec09036f8c/temp/api.txt)
+
+The short value is the key and the long value is the secret(aka password).
+
 
 For SpringBoot, you can simply put this configuration in the **application.properties** file that is already under the **src/main/resources** folder
 
