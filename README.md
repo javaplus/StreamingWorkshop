@@ -192,7 +192,7 @@ You can change the value of **bookname** in the url to test passing different va
 
 Now when we get our HTTP request in our RestController, we want to be able to broadcast a message to Kafka that a new for sale text book was added.  To do this we are going to create a message producer class that utilizes the [KafkaTemplate](https://docs.spring.io/spring-kafka/reference/html/#sending-messages) from the [Spring-Kafka Library](https://spring.io/projects/spring-kafka) to write messages to a Kafka topic.
 
-You need to create a new class for this and I would put into a folder/package called "services" and call it "ForSaleTextBookProducer".  So, create a new folder/package called **services** in the "com\learnathon\springbootkafkademo" package and then create the class **ForSaleTextBoodProducer** in this services package.
+You need to create a new class for this and I would put into a folder/package called "services" and call it "ForSaleTextBookProducer".  So, create a new folder/package called **services** in the "com\learnathon\springbootkafkademo" package and then create the class **ForSaleTextBookProducer** in this services package.
 
 ![Producer Class](/images/ProducerClass.PNG)
 
