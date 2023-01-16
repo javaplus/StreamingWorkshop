@@ -265,6 +265,17 @@ Now it's time to restart the application.  However, if you are thinking, "but wa
 ```
 This is because with no configuration specified it will try to connect to a local Kafka instance.  If you don't have Kafka running locally, then you will see these errors.  We will be connecting to our Confluent Kafka cluster.  Let's see how to do that...
 
+## NOTE: If following this outside of an instructor led lab, you will need your own Kafka environment.
+
+You can easily get your own Kafka installation running local in Docker.  If you have [Docker](https://www.docker.com/products/docker-desktop/) running locally you can actually skip all the bootstrap server configs because SpringBoot will default to looking to local host.
+
+Here's a link to a repo with a docker compose file you can use to setup your kafka cluster and instructions:[Kafka Docker Help](https://github.com/javaplus/KafkaDockerHelp)
+
+You may also need to update a hosts file to map "kafka" to localhost(127.0.0.1).
+
+The section below "Configuring SpringBoot to talk to Kafka isn't needed if you have Kafka running locally.
+Also, the default installation of Kafka will also allow the producer or consumer to create a topic automatcially when they connect.  So, you should not need to explicitly create a topic.  The topic will be created automatically when you first connect to Kafka.
+
 ### Configuring SpringBoot to talk to Kafka
 
 In a less secure Kafka deployment, you would only have to specify the location of the Kafka brokers you wanted to use.  However, because of our secure Kafka environment, we also have to specify an API key and secret to talk to Kafka.  The Api key and secret can be found here: [https://github.com/javaplus/StreamingWorkshop/blob/76a836690b54db2666f3cb953550a4ec09036f8c/temp/api.txt](https://github.com/javaplus/StreamingWorkshop/blob/76a836690b54db2666f3cb953550a4ec09036f8c/temp/api.txt)
